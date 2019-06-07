@@ -1,0 +1,9 @@
+# Reference
+
+1. waddell2005fixing
+   - Implementation for (mutually) recursive closure in functional style
+2. https://www.cs.bgu.ac.il/~ppl172/wiki.files/class/notebook/2.8RecursionMutation.html
+
+3. 
+
+4. 
