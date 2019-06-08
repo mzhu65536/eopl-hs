@@ -81,6 +81,15 @@ spec = parallel $ do
       (parseEval $
       "let x = (let y = 2 in y) in y")
       $ VException "No such a binding: y"
+    it "let multiple arguments" $
+      shouldBe 
+      (parseEval $
+       "let x = 2 , " ++
+       "    y = 5 , " ++
+       "    z = 6 , " ++
+       "    k = 7 in " ++
+       " x + y + z + k ")
+      $ VInt 20
   describe "eval rec" $ do        
     it "rec fact" $
       shouldBe
@@ -96,22 +105,22 @@ spec = parallel $ do
       )
       $
       VClosure
-      "b"
+      ["b"]
       (App
-       (Lam "f"
+       (Lam ["f"]
         (App
          (Var "b")
-         (Lam "x" (App (App (Var "f") (Var "f")) (Var "x")))))
-       (Lam "f"
+         (Lam ["x"] (App (App (Var "f") (Var "f")) (Var "x")))))
+       (Lam ["f"]
         (App
          (Var "b")
-         (Lam "x" (App (App (Var "f") (Var "f")) (Var "x")))))) []
+         (Lam ["x"] (App (App (Var "f") (Var "f")) (Var "x")))))) []
 
     it "fact functor" $
       shouldBe
       (parseEval $
        "\\f -> if zero? x then 1 else x * (f (x - 1))")
-      (VClosure "f"
+      (VClosure ["f"]
          (If
           (ZeroP (Var "x"))
           (Lit (LInt 1))
@@ -133,6 +142,22 @@ spec = parallel $ do
        "let fact = \\f -> \\x -> if zero? x then 1 else x * (f (x - 1)) in " ++
        "(Y fact) 3") 
       $ VInt 6
+    it "apply lambda 3" $
+      shouldBe
+      (parseEval $
+      "(\\x y z ->car cdr (list (x, y, z))) 1 2 3"
+      )
+      $ VInt 2
+
+    it "apply partial" $
+      shouldBe
+      (parseEval $
+       "let a = \\f x y -> f (x + y) in " ++
+       "  let b = (a (\\x -> x + 1)) in  " ++
+       "    let c = b 2 in " ++
+       "       c 2"
+      )
+      $ VInt 5
   describe "eval apply" $ do
     it "Apply" $
       shouldSatisfy
@@ -140,6 +165,15 @@ spec = parallel $ do
       "let a = 1 in " ++
       "let b = 2 in a b")
       $ isVException
+  describe "eval list" $ do
+    it "hybrid test" $
+      shouldBe
+      (parseEval $
+      "car cdr car list ((list (1, 2, 3)), 4, 5, 6)")
+      (VInt 2)
+      
+
+      
 
 isVException :: Val -> Bool
 isVException (VException _) = True

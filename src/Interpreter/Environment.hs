@@ -17,7 +17,7 @@ extendEnv ((s', v') : xs) s v
 
 extendEnvR :: Env -> Sym -> Sym -> Exp -> Env
 extendEnvR env nameP varB expP =
-  let vClosure = VClosure varB expP envR
+  let vClosure = VClosure [varB] expP envR
       envR = extendEnv env nameP vClosure in
     envR
     

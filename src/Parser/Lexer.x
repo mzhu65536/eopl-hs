@@ -35,17 +35,29 @@ tokens :-
   True                          { \_ -> TokenTrue }
   False                         { \_ -> TokenFalse }
   in                            { \_ -> TokenIn }
-  $digit+                       { \s -> TokenNum (read s) }
+
   "->"                          { \_ -> TokenArrow }
   \=                            { \_ -> TokenEq }
   \\                            { \_ -> TokenLambda }
   [\-]                          { \_ -> TokenSub }
   [\*]                          { \_ -> TokenMul }
-  "$"                          { \_ -> TokenStrict }
+  "$"                           { \_ -> TokenStrict }
   [\+]                          { \_ -> TokenAdd }  
   \(                            { \_ -> TokenLParen }
   \)                            { \_ -> TokenRParen }
+  ","                           { \_ -> TokenCSep }
+
+  -- List Extension
+  "cons"                        { \_ -> TokenCons }
+  "car"                         { \_ -> TokenCar  }
+  "cdr"                         { \_ -> TokenCdr  }
+  "null"                        { \_ -> TokenNil  }
+  "null?"                       { \_ -> TokenNilP }
+  "list"                        { \_ -> TokenList }
+  
   $alpha [$alpha $digit \_ \']* { \s -> TokenSym s }
+  $digit+                       { \s -> TokenNum (read s) }     
+  
 {
 data Token 
   = TokenLet
@@ -53,6 +65,7 @@ data Token
   | TokenStrict
   | TokenRec
   | TokenIf
+  | TokenCSep
   | TokenZeroP
   | TokenElse
   | TokenThen
@@ -69,6 +82,12 @@ data Token
   | TokenLParen
   | TokenRParen
   | TokenEOF
+  | TokenCons
+  | TokenCar 
+  | TokenCdr 
+  | TokenNil 
+  | TokenNilP
+  | TokenList
   deriving (Eq,Show)
   
 scanTokens :: String -> Except String [Token]

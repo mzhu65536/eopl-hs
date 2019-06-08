@@ -21,7 +21,7 @@ spec = parallel $ do
     it "parsing let" $
       shouldBe
       (parseExpr "let a = 1 in 2")
-      (Right (Let ("a") (Lit (LInt 1)) (Lit (LInt 2))))
+      (Right (Let [(("a"), (Lit (LInt 1)))] (Lit (LInt 2))))
   describe "parsing if" $ do
     it "parsing if" $
       shouldBe
@@ -31,7 +31,7 @@ spec = parallel $ do
     it "parsing lam" $
       shouldBe
       (parseExpr "\\a -> 1 - 2 - a")
-      (Right (Lam "a"
+      (Right (Lam ["a"]
                (Op Diff
                  (Op Diff (Lit $ LInt 1) (Lit $ LInt 2))
                  (Var "a"))))
@@ -45,7 +45,51 @@ spec = parallel $ do
       shouldBe
       (parseExpr "(\\c -> c - a)  65536")
       (Right (App
-               (Lam "c" (Op Diff (Var "c") (Var "a")))
-               (Lit $ LInt 65536)))             
+               (Lam ["c"] (Op Diff (Var "c") (Var "a")))
+               (Lit $ LInt 65536)))
+  describe "parsing list" $ do
+    it "list" $
+      shouldBe
+      (parseExpr "list (1, 2, 3, 4)")
+      (Right (Lst $ Lsts [ Lit $ LInt 1
+                         , Lit $ LInt 2
+                         , Lit $ LInt 3
+                         , Lit $ LInt 4 ]))
+    it "cons list" $
+      shouldBe
+      (parseExpr "cons f list (1, 2, 3, 4)")
+      (Right (Lst $ Cons
+              (Var "f")
+              (Lst $ Lsts [ Lit $ LInt 1
+                          , Lit $ LInt 2
+                          , Lit $ LInt 3
+                          , Lit $ LInt 4 ])))
+    it "cons pair" $
+      shouldBe
+      (parseExpr "cons 1 2")
+      (Right (Lst $ Cons
+              (Lit $ LInt 1)
+              (Lit $ LInt 2)))
+    it "car pair" $
+      shouldBe
+      (parseExpr "car cons 1 2") $
+      Right $
+      Lst $ Car $ Lst $ Cons (Lit $ LInt 1) (Lit $ LInt 2)
+    it "car pair" $
+      shouldBe
+      (parseExpr "cdr cons 1 2") $
+      Right $
+      Lst $ Cdr $ Lst $ Cons (Lit $ LInt 1) (Lit $ LInt 2)
+    it "cons null" $
+      shouldBe
+      (parseExpr "cons 1 null") $
+      Right $
+      Lst $ Cons (Lit $ LInt 1) (Lst Nil)
+    it "null? null" $
+      shouldBe
+      (parseExpr "null? null") $
+      Right $
+      Lst $ NilP (Lst Nil)
+                          
 
   

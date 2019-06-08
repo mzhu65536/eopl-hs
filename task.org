@@ -1,5 +1,11 @@
 # EOPL
-* Chapter 5
-1. Pending
-2. Implemented
-3. let2
+* TODO Chapter 5 [5/6]
+  1. [ ] CPS Lambda Style
+  2. [X] CPS Data Rep
+  3. [X] let2 (generalized in 5.7)
+  4. [X] let3 (generalized in 5.7)
+  5. [X] list extendsion
+  6. [X] list keyword (sophisticated)
+  7. [-] multiple declaration let
+  8. [-] multiple declaration lambda
+  9. 

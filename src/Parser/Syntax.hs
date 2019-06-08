@@ -10,26 +10,37 @@ module Parser.Syntax
   , Exp(..)
   , Lit(..)
   , Binop(..)
+  , Lst(..)
   ) where
 
 type Sym = String
 
 -- For the pedagogical purpose, we follow datatype from EOPL 
 data Exp = Lit Lit
-         | Let Sym Exp Exp
+         | Let [(Sym, Exp)] Exp
          | Rec Sym Sym Exp Exp
          | Var Sym
          | Op Binop Exp Exp
          | ZeroP Exp
          | If Exp Exp Exp
-         | Lam Sym Exp
+         | Lam [Sym] Exp
          | App Exp Exp
+         | Lst Lst
   deriving (Show, Eq)
             
 data Lit = LInt Int
          | LBool Bool
   deriving (Show, Eq)
-  
+
+-- List extension (Exercise 5.5 5.6)
+data Lst = Cons Exp Exp
+         | Nil
+         | Car Exp
+         | Cdr Exp
+         | NilP Exp
+         | Lsts [Exp]
+  deriving (Show, Eq)
 
 data Binop = Diff | Mult | Plus
   deriving (Show, Eq)
+
