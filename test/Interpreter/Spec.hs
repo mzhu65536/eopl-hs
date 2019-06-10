@@ -171,8 +171,28 @@ spec = parallel $ do
       (parseEval $
       "car cdr car list ((list (1, 2, 3)), 4, 5, 6)")
       (VInt 2)
+  describe "eval begin" $ do
+    it "set" $
+      shouldBe
+      (parseEval "let a = 1 in begin set a = 2 end")
+      (VInt 2)
+    it "begin mono" $
+      shouldBe
+      (parseEval "begin let a = 1 in a * 2 end")
+      (VInt 2)
+    it "begin change" $
+      shouldBe
+      (parseEval $
+       "let a = 1 in " ++
+       "begin set a = 2, a * 2 end")
+      (VInt 4)
+    it "begin mut" $
+      shouldBe
+      (parseEval $
+      "let a = 1, b = 2 in " ++
+      "begin a + b, a, b, set a = 4, set b = 6, a, b, a + b end")
+      (VInt 10)
       
-
       
 
 isVException :: Val -> Bool

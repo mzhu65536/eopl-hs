@@ -1,5 +1,5 @@
 # EOPL
-* TODO Chapter 5 [7/11]
+* TODO Chapter 5 [10/11]
   1. [ ] CPS Lambda Style
   2. [X] CPS Data Rep
   3. [X] let2 (generalized in 5.7)
@@ -8,7 +8,10 @@
   6. [X] list keyword (sophisticated)
   7. [X] multiple declaration let
   8. [X] multiple declaration lambda
-  9. [-] implicit reference langauge
-  10. [-] implicit reference langauge
-  11. [-] begin expression
-  12. 
+  9. [X] implicit reference langauge (same with let expression)
+  10. [X] implicit reference langauge (change binding to other storage)
+  11. [X] begin expression
+  12. [ ] output information (IO Monad makes printing problematic) Pending
+  13. [ ] fact fact-iter
+  14. [ ] refined output
+  15. 

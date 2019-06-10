@@ -26,6 +26,8 @@ data Exp = Lit Lit
          | Lam [Sym] Exp
          | App Exp Exp
          | Lst Lst
+         | Set Sym Exp
+         | Begin [Exp] 
   deriving (Show, Eq)
             
 data Lit = LInt Int

@@ -26,6 +26,9 @@ tokens :-
   "#".*                         ;
 
   -- Syntax
+  "begin"                       { \_ -> TokenBegin     }
+  "end"                         { \_ -> TokenEnd    }
+  "set"                         { \_ -> TokenSet    } 
   "if"                          { \_ -> TokenIf }
   "zero?"                       { \_ -> TokenZeroP }      
   "else"                        { \_ -> TokenElse }
@@ -62,7 +65,10 @@ tokens :-
 data Token 
   = TokenLet
   | TokenAdd
+  | TokenSet
   | TokenStrict
+  | TokenBegin    
+  | TokenEnd
   | TokenRec
   | TokenIf
   | TokenCSep

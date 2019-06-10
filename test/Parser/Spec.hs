@@ -90,6 +90,10 @@ spec = parallel $ do
       (parseExpr "null? null") $
       Right $
       Lst $ NilP (Lst Nil)
-                          
-
+  describe "parsing begin block" $ do
+    it "begin mono" $
+      shouldBe
+      (parseExpr "begin let a = 1 in a * 2 end") $
+      Right $
+      Begin [Let [("a", Lit $ LInt 1)] (Op Mult (Var "a") (Lit $ LInt 2))]
   

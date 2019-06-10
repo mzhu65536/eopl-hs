@@ -28,6 +28,9 @@ import Control.Monad.Except
 
 -- Token Names
 %token
+    "begin" { TokenBegin  }
+    "end"   { TokenEnd    }
+    "set"   { TokenSet    }
     "if"    { TokenIf     }
     "else"  { TokenElse   }
     "then"  { TokenThen   }
@@ -66,12 +69,18 @@ Expr : let VExs in Expr                  { Let $2 $4         }
      | '\\' Vars "->" Expr               { Lam $2 $4         }
      | "if" Expr "then" Expr "else" Expr { If $2 $4 $6       }
      | "zero?" Expr                      { ZeroP $2          }
+     | "set" VAR '=' Expr                { Set $2 $4         }
+     | "begin" Exps "end"                { Begin $2          }
      | LFrm                              { $1                }
 
 VExp : VAR '=' Expr                      { ($1, $3)          }
 
-VExs : VExp ',' VExs                         { $1 : $3           }
+VExs : VExp ',' VExs                     { $1 : $3           }
      | VExp                              { [$1]              }
+
+Exps : Expr ',' Exps                     { $1 : $3           }
+     | Expr                              { [$1]              }
+
 
 Vars : VAR Vars                          { $1 : $2           }
      | VAR                               { [$1]              }
