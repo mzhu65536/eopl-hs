@@ -6,6 +6,8 @@ module Interpreter.Data ( Cont(..)
                         , Env
                         , Alp
                         , Val(..)
+                        , Sto(..)
+                        , Ref
                         ) where
 import Parser.Syntax
 import Data.Set
@@ -21,6 +23,9 @@ data Val = VInt Int
          | VCons Val Val
          | VNil
   deriving (Eq)
+
+type Ref = Int
+type Sto = [Val]
 
 instance Show Val where
   show (VInt i)           = "Int: " ++ show i 

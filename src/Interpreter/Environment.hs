@@ -2,9 +2,7 @@ module Interpreter.Environment where
 
 import Interpreter.Data
 import Parser.Syntax
-import Data.Set(empty
-               ,insert
-               )
+
 
 emptyEnv :: Env
 emptyEnv = []
