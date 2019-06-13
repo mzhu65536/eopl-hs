@@ -14,8 +14,6 @@ import Parser.Syntax
 import Data.Set
 import Control.Monad
 
-newtype Interp 
-
 -- type Sym = String
 type Env = [(Sym, Ref)]
 type Alp = Set Sym

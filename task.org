@@ -1,5 +1,5 @@
 # EOPL
-* TODO Chapter 5 [10/11]
+* TODO Chapter 5 [10/14]
   1. [ ] CPS Lambda Style
   2. [X] CPS Data Rep
   3. [X] let2 (generalized in 5.7)
@@ -14,4 +14,5 @@
   12. [ ] output information (IO Monad makes printing problematic) Pending
   13. [ ] fact fact-iter
   14. [ ] refined output
-  15. 
+  15. [ ] list continuation representation
+  16. [ ] statement extension

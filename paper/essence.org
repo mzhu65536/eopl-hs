@@ -1,0 +1,20 @@
+# The essence of functional programming
+
+1. Introduction
+   - How to use monads to structure a interpreter to introduce IO, error and
+     basic evaluation
+   - Relationship between Monad and CPS
+   - Monad comes from category theory 
+2. Interpreting Monads
+   - Monad ~type M~
+     - ~unitM :: a -> M a~
+     - ~bindM :: M a -> (a -> M b) -> M b~
+     - ~showM~
+     - 
+   - changed signature from ~Val~ to ~M Val~
+
+       
+
+   
+ 
+
