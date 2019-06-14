@@ -21,7 +21,7 @@ extendEnv ((s', r') : xs) s r
 extendEnvR :: Env -> Sto -> Sym -> Sym -> Exp -> (Env, Sto)
 extendEnvR env sto nameP varB expP =
   let vClosure = VClosure [varB] expP envR
-      ref = extendSto vClosure
+      (sto', refClosure) = extendSto sto vClosure
       envR = extendEnv env nameP refClosure in
     (envR, sto')
 
@@ -29,8 +29,9 @@ extendEnvR' :: Sym -> Sym -> Exp -> Eval Ref
 extendEnvR' nameP varB expP =
   do env <- ask
      let vClosure = VClosure [varB] expP envR
-         ref = extendSto vClosure
-         envR = extendEnv env nameP ref 
+     let envR = extendEnv env nameP ref 
+     ref <- extendSto vClosure
+
      (envR, sto')    
 
 -- Use lazy evaluation so that the thunk will not evaluated if found

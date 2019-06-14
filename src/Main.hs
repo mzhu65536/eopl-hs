@@ -18,10 +18,9 @@ readEvalPrintLoop = do
   case maybeLine of
        Nothing -> return () 
        Just "exit" -> return ()
-       Just line -> do parsedLine <- return (parseExpr line)
-                       outputStrLn $
-                         case parsedLine of
-                           Left err -> "Parsing Error: " ++ err
-                           Right ast -> (show $ eval ast)
+       Just line -> do case parseExpr line of
+                         Left err -> outputStrLn $ show err
+                         Right ast -> return (eval2 ast) >>
+                                      outputStr ""
                        readEvalPrintLoop
     

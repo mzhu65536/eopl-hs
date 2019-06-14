@@ -9,10 +9,19 @@ module Interpreter.Data ( Cont(..)
                         , Sto
                         , Ref
                         , RefVal
+                        , Eval
                         ) where
 import Parser.Syntax
 import Data.Set
-import Control.Monad
+
+import Control.Monad.Writer
+import Control.Monad.State
+import Control.Monad.Reader
+import Control.Monad.Except
+
+type Eval a =
+  ReaderT Env (ExceptT String (StateT Sto IO)) a
+
 
 -- type Sym = String
 type Env = [(Sym, Ref)]
@@ -28,7 +37,7 @@ data Val = VInt Int
 
 type Ref = Int
 type Sto = [Val]
-type RefVal = (Sto, Ref)
+type RefVal = (Ref, Sto)
 
 instance Show Val where
   show (VInt i)           = "Int: " ++ show i 

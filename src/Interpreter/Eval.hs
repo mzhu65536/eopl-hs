@@ -6,6 +6,11 @@ import Interpreter.Storage
 import Interpreter.Environment
 import Parser.Syntax
 
+import Control.Monad.Writer
+import Control.Monad.State
+import Control.Monad.Reader
+import Control.Monad.Except
+
 -- TODO: More Haskellish  (Typeclass Eval, Monad ...)
 
 -- The Continuation-Passing Style Evaluation
@@ -14,20 +19,30 @@ import Parser.Syntax
 ---- evaluation of operands
 ---- non-tail recursive calls
 -------------------------------------------------------------------------------
+type Final a = IO ((Either String a), Sto)
 
-eval :: Exp -> Val
-eval expr =
-  let (sto, ref) = evalK expr emptyEnv emptySto KEmpty in
-    deRef sto ref
+runEval :: Env -> Sto -> Eval a -> Final a
+runEval env sto result = runStateT (runExceptT (runReaderT result env)) sto
 
-evalK :: Exp -> Env -> Sto -> Cont -> RefVal
-evalK expr env sto cont = case expr of
-  Lit lit                  -> applyCont cont $ evalLit sto lit
-  Var sym                  -> applyCont cont $ applyEnv env sto sym
-  Lam syms expB            -> applyCont cont $ procedure syms expB env sto 
-  Rec symP symB expP expB  -> let (env', sto') =
-                                    (extendEnvR env sto symP symB expP) in
-                                evalK expB env' sto' cont
+eval2 :: Exp -> IO (Either String Val) 
+eval2 ast = runEval emptyEnv emptySto (eval ast) >>=
+            \(val, _) -> return val
+               
+eval :: Exp -> Eval Val
+eval expr = do 
+  ref <- evalK expr KEmpty
+  sto <- get
+  return $ deRef sto ref
+
+evalK :: Exp -> Cont -> Eval Ref
+evalK expr cont = case expr of
+  Lit lit                  -> do sto <- get
+                                 applyCont cont $ evalLit sto lit
+  Var sym                  -> applyCont cont $ applyEnv sym 
+  Lam syms expB            -> applyCont cont $ procedure syms expB 
+  Rec symP symB expP expB  -> do let (env', sto') =
+                                       extendEnvR symP symB expP 
+                                 local (const env') $ evalK expB cont
   ZeroP expZ               -> evalK expZ env sto (KZero cont)
   Let symExpS expB         -> case symExpS of
                                 []                 -> evalK expB env sto cont
@@ -53,14 +68,13 @@ evalK expr env sto cont = case expr of
     extendSto sto $ VException "Invalid Begin Expression"
   Begin (x : xs)           -> evalK x env sto (KBegin cont xs env)
 
-evalLit :: Sto -> Lit -> RefVal
-evalLit sto (LInt i)  = extendSto sto $ VInt i
-evalLit sto (LBool b) = extendSto sto $ VBool b
+evalLit :: Sto -> Lit -> Eval Ref
+evalLit sto (LInt i)  = extendSto $ VInt i
+evalLit sto (LBool b) = extendSto $ VBool b
 
-
-applyCont :: Cont -> RefVal -> RefVal
-applyCont k (sto, ref) = 
-  applyCont' (deRef sto ref) 
+applyCont :: Cont -> Eval Ref -> Eval Ref
+applyCont k (sto, ref) =
+  applyCont' (deRef sto ref)
   where
     applyCont' (VException _) = (sto, ref)
     applyCont' v = case k of
@@ -72,10 +86,10 @@ applyCont k (sto, ref) =
             _      -> extendSto sto $
                       reportTypeMismatch v "VInt ...")
       KLet k' se sV e e' eb -> -- k' sym+exps symV envOrg envAcc expBody
-        let (sto', refV) = extendSto sto v 
-            env' = (extendEnv e' sV refV) in
+        let (sto', refV) = extendSto sto v
+            env' = extendEnv e' sV refV in
           (case se of
-             []               -> evalK eb env' sto' k' 
+             []               -> evalK eb env' sto' k'
              (s', exp') : rst -> evalK exp' e sto' $ KLet k' rst s' e env' eb)
       KIf k' expT expF env  ->
         case v of
@@ -84,7 +98,7 @@ applyCont k (sto, ref) =
           _           -> extendSto sto $ VException "Type Mismatch"
       KOpr k' expA env      -> evalK expA env sto (KApp k' ref)
       KApp k' refF          -> applyProcedureK refF (sto, ref) k'
-      KBiOpL k' op expR env -> evalK expR env sto (KBiOpR k' op ref) 
+      KBiOpL k' op expR env -> evalK expR env sto (KBiOpR k' op ref)
       KBiOpR k' op refL     -> applyCont k' $
         extendSto sto $
         case (op, deRef sto refL, v) of
@@ -93,16 +107,16 @@ applyCont k (sto, ref) =
           (Mult, VInt l, VInt r) -> VInt $ l * r
           _                      -> VException "Type Mismatch"
       KConsL k' expR env    -> evalK expR env sto (KConsR k' ref)
-      KConsR k' refL        -> applyCont k' $ extendSto sto $ (VCons refL ref)
+      KConsR k' refL        -> applyCont k' $ extendSto sto (VCons refL ref)
       KCar k'               -> applyCont k' $
         case v of
           VCons rL _ -> (sto, rL)
-          _          -> extendSto sto $ reportTypeMismatch v "VCons" 
+          _          -> extendSto sto $ reportTypeMismatch v "VCons"
       KCdr k'               -> applyCont k' $
         case v of
           VCons _ rR -> (sto, rR)
-          _          -> extendSto sto $ reportTypeMismatch v "VCons" 
-      KNilP k'              -> applyCont k' $ extendSto sto $ 
+          _          -> extendSto sto $ reportTypeMismatch v "VCons"
+      KNilP k'              -> applyCont k' $ extendSto sto $
         case v of
           VNil -> VBool True
           _    -> VBool False
@@ -111,19 +125,19 @@ applyCont k (sto, ref) =
       KSet k' refV          -> applyCont k' $ updateSto sto refV v
       KBegin k' exps env    ->
         case exps of
-          []       -> applyCont k' $ (sto, ref)
-          (x : xs) -> evalK x env sto $ KBegin k' xs env 
+          []       -> applyCont k' (sto, ref)
+          (x : xs) -> evalK x env sto $ KBegin k' xs env
 
 applyProcedureK :: Ref -> RefVal -> Cont -> RefVal
 applyProcedureK refClosure (sto, refApp) k =
   applyProcedureK' (deRef sto refClosure) where
-  applyProcedureK' (VClosure symVs expB env) = 
+  applyProcedureK' (VClosure symVs expB env) =
     case symVs of
       []            -> extendSto sto $ VException "Should Have Been Evaluated"
       [symV]        -> evalK expB (extendEnv env symV refApp) sto k
       symV : symVs' -> applyCont k $
-                       extendSto sto $
-                       (VClosure symVs' expB $ extendEnv env symV refApp) 
+                       extendSto sto
+                       (VClosure symVs' expB $ extendEnv env symV refApp)
   applyProcedureK' v                       =
     extendSto sto $ reportTypeMismatch v "VClosure ..."
 
@@ -131,6 +145,6 @@ reportTypeMismatch :: Val -> String -> Val
 reportTypeMismatch vGiven sExpected =
   VException $
   "Type Mismatch:\n" ++
-  "Given: " ++ (show vGiven) ++ "\n" ++ 
+  "Given: " ++ show vGiven ++ "\n" ++
   "Expected: " ++ sExpected
-  
+

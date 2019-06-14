@@ -4,5 +4,11 @@ import Interpreter.Data
 import Interpreter.Storage
 import Parser.Syntax
 
-procedure :: [Sym] -> Exp -> Env -> Sto -> RefVal
-procedure syms expr env sto = extendSto sto $ VClosure syms expr env
+import Control.Monad.Writer
+import Control.Monad.State
+import Control.Monad.Reader
+import Control.Monad.Except
+
+procedure :: [Sym] -> Exp -> Eval Ref
+procedure syms expr = do env <- ask
+                         extendSto $ VClosure syms expr env

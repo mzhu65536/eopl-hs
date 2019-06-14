@@ -2,13 +2,18 @@ module Interpreter.Storage where
 
 import Interpreter.Data
 
+import Control.Monad.Writer
+import Control.Monad.State
+import Control.Monad.Reader
+import Control.Monad.Except
+
 emptySto :: Sto
 emptySto = []
 
 updateSto :: Sto -> Ref -> Val -> RefVal
 updateSto sto ref val = case updateSto' sto ref of
                           Nothing   -> extendSto sto $ reportRefOutBound ref
-                          Just sto' -> (sto', ref)
+                          Just sto' -> (ref, sto')
     where
       updateSto' :: Sto -> Ref -> Maybe Sto
       updateSto' [] _          = Nothing
@@ -22,8 +27,11 @@ deRef [] r = reportRefOutBound r
 deRef (x : xs) r | r == 0 = x
                  | otherwise = deRef xs (r - 1)
 
-extendSto :: Sto -> Val -> (Sto, Ref)
-extendSto sto val = (sto ++ [val], length sto)
-
+extendSto :: Val -> Eval Ref
+extendSto val = do sto <- get
+                   let (ref, sto') = (length sto, sto ++ [val])
+                   put sto'
+                   return ref
+                   
 reportRefOutBound :: Ref -> Val
 reportRefOutBound ref = VException $ "Unable to retrive ref #"++ (show ref)
