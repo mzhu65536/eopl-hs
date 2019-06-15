@@ -1,5 +1,5 @@
 # EOPL
-* TODO Chapter 5 [10/17]
+* TODO Chapter 5 [13/21]
   :PROPERTIES:
   :COOKIE_DATA: recursive
   :END:
@@ -18,14 +18,15 @@
      12) [ ] output information (IO Monad makes printing problematic) Pending
      13) [ ] fact ~fact-iter~
      14) [ ] profile ~fact-iter~ and ~fact~  (IO Monad)
-     15) [ ] list continuation representation (StateT/ReaderT)
-     16) [ ] statement extension (Parser ready, to be implemented in monadic one)
-  2. Trampolined Interpreter [0/1]
-     17) [ ] [@17] 
-     18) 
-     19) 
-     20) 
-     21) 
-  3. 
-
-
+     15) [ ] list continuation representation (~StateT~ / ~ReaderT~)
+     16) [ ] statement extension (to be implemented in monadic interp)
+  2. Trampolined Interpreter (tail recursion) [3/5] 
+     17) [@17] [X] wrap ~Bounce~ type around ~applyProcedureK~
+     18) [X] ~data~ representation of ~Bounce~
+     19) [X] wrap it around ~applyCont~ will have not type change
+     20) [ ] optimize ending ~applyCont KEmpty refVal~
+     21) [ ] implement in procedural language (replacing trampoline as loop) (to
+         be implemented in code generation)
+     22) [ ] to be verified later
+  3. Imperative Interpreter (State Monad)
+* 

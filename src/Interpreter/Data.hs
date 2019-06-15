@@ -9,6 +9,7 @@ module Interpreter.Data ( Cont(..)
                         , Sto
                         , Ref
                         , RefVal
+                        , Bounce(..)
                         ) where
 import Parser.Syntax
 import Data.Set
@@ -29,6 +30,9 @@ data Val = VInt Int
 type Ref = Int
 type Sto = [Val]
 type RefVal = (Sto, Ref)
+
+data Bounce a = BVal RefVal
+              | BStep (Bounce a)
 
 instance Show Val where
   show (VInt i)           = "Int: " ++ show i 

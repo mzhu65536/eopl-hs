@@ -38,7 +38,7 @@ library:
 executables:
   eopl-hs-exe:
     main:                Main.hs
-    source-dirs:         src
+    source-dirs:         app
     ghc-options:
     - -threaded
     - -rtsopts
