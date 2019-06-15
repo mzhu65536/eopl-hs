@@ -48,8 +48,11 @@ tokens :-
   [\+]                          { \_ -> TokenAdd }  
   \(                            { \_ -> TokenLParen }
   \)                            { \_ -> TokenRParen }
+  "{" { \_ -> TokenLBrace }
+  "}" { \_ -> TokenRBrace }
   ","                           { \_ -> TokenCSep }
-
+  ";"  { \_ -> TokenSCep }
+  
   -- List Extension
   "cons"                        { \_ -> TokenCons }
   "car"                         { \_ -> TokenCar  }
@@ -57,6 +60,11 @@ tokens :-
   "null"                        { \_ -> TokenNil  }
   "null?"                       { \_ -> TokenNilP }
   "list"                        { \_ -> TokenList }
+
+  -- Statement Extension
+  "print"                       { \_ -> TokenPrint }
+  "while"                       { \_ -> TokenWhile }
+  "var"                         { \_ -> TokenVar   }    
   
   $alpha [$alpha $digit \_ \']* { \s -> TokenSym s }
   $digit+                       { \s -> TokenNum (read s) }     
@@ -66,12 +74,18 @@ data Token
   = TokenLet
   | TokenAdd
   | TokenSet
+  | TokenDeclare
+  | TokenPrint
+  | TokenWhile
+  | TokenSCep
   | TokenStrict
   | TokenBegin    
   | TokenEnd
   | TokenRec
+  | TokenVar
   | TokenIf
   | TokenCSep
+  | TokenSSep
   | TokenZeroP
   | TokenElse
   | TokenThen
@@ -87,6 +101,8 @@ data Token
   | TokenMul
   | TokenLParen
   | TokenRParen
+  | TokenLBrace
+  | TokenRBrace  
   | TokenEOF
   | TokenCons
   | TokenCar 

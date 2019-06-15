@@ -11,9 +11,17 @@ module Parser.Syntax
   , Lit(..)
   , Binop(..)
   , Lst(..)
+  , Stm(..)
   ) where
 
 type Sym = String
+
+data Stm = Assign Sym Exp
+         | Print Exp
+         | Block [Stm]
+         | IfS Exp Stm Stm
+         | While Exp Stm
+         | Declare [Sym] Stm
 
 -- For the pedagogical purpose, we follow datatype from EOPL 
 data Exp = Lit Lit

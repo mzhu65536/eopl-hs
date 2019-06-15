@@ -50,7 +50,13 @@ import Control.Monad.Except
     '*'     { TokenMul    }
     '('     { TokenLParen }
     ')'     { TokenRParen }
-    ','     { TokenCSep }
+    '{'     { TokenLBrace }
+    '}'     { TokenRBrace }    
+    ','     { TokenCSep   }
+    ';'     { TokenSSep   }
+    "print" { TokenPrint  }
+    "while" { TokenWhile  }
+    "var"   { TokenVar    }   
     "cons"  { TokenCons   }
     "car"   { TokenCar    }
     "cdr"   { TokenCdr    }
@@ -63,6 +69,17 @@ import Control.Monad.Except
 %left '+' '-'
 %left '*' '$'
 %%
+
+-- Stms : Stmt { [$1] }
+--      | Stmt ';' Stms { $1 : $3 }
+
+-- Stmt : VAR '=' Expr                      { Assign $1 $3     }
+--      | "print" Expr                      { Print $2         }
+--      | '{' Stms '}'                      { Block $2         }
+--      | "if" '(' Expr ')' Stmt Stmt       { IfS $3 $5 $6     }
+--      | "while" '(' Expr ')' Stmt         { While $3 $5      }
+--      | "var" Vars ';' Stmt               { Declare $2 $4    }  
+     
 
 Expr : let VExs in Expr                  { Let $2 $4         }
      | rec VAR VAR '=' Expr in Expr      { Rec $2 $3 $5 $7   }

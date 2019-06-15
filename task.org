@@ -1,18 +1,31 @@
 # EOPL
-* TODO Chapter 5 [10/14]
-  1. [ ] CPS Lambda Style
-  2. [X] CPS Data Rep
-  3. [X] let2 (generalized in 5.7)
-  4. [X] let3 (generalized in 5.7)
-  5. [X] list extendsion
-  6. [X] list keyword (sophisticated)
-  7. [X] multiple declaration let
-  8. [X] multiple declaration lambda
-  9. [X] implicit reference langauge (same with let expression)
-  10. [X] implicit reference langauge (change binding to other storage)
-  11. [X] begin expression
-  12. [ ] output information (IO Monad makes printing problematic) Pending
-  13. [ ] fact fact-iter
-  14. [ ] refined output
-  15. [ ] list continuation representation
-  16. [ ] statement extension
+* TODO Chapter 5 [10/17]
+  :PROPERTIES:
+  :COOKIE_DATA: recursive
+  :END:
+  1. CPS Interpreter [10/16]
+     1) [ ] CPS Lambda Style
+     2) [X] CPS Data Rep
+     3) [X] let2 (generalized in 5.7)
+     4) [X] let3 (generalized in 5.7)
+     5) [X] list extendsion
+     6) [X] list keyword (sophisticated)
+     7) [X] multiple declaration let
+     8) [X] multiple declaration lambda
+     9) [X] implicit reference langauge (same with let expression)
+     10) [X] implicit reference langauge (change binding to other storage)
+     11) [X] begin expression
+     12) [ ] output information (IO Monad makes printing problematic) Pending
+     13) [ ] fact ~fact-iter~
+     14) [ ] profile ~fact-iter~ and ~fact~  (IO Monad)
+     15) [ ] list continuation representation (StateT/ReaderT)
+     16) [ ] statement extension (Parser ready, to be implemented in monadic one)
+  2. Trampolined Interpreter [0/1]
+     17) [ ] [@17] 
+     18) 
+     19) 
+     20) 
+     21) 
+  3. 
+
+
