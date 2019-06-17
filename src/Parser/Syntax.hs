@@ -26,7 +26,7 @@ data Stm = Assign Sym Exp
 -- For the pedagogical purpose, we follow datatype from EOPL 
 data Exp = Lit Lit
          | Let [(Sym, Exp)] Exp
-         | Rec Sym Sym Exp Exp
+         | Rec Sym [Sym] Exp Exp
          | Var Sym
          | Op Binop Exp Exp
          | ZeroP Exp
@@ -35,11 +35,14 @@ data Exp = Lit Lit
          | App Exp Exp
          | Lst Lst
          | Set Sym Exp
-         | Begin [Exp] 
+         | Begin [Exp]
+         | Try Exp Sym Exp
+         | Raise Exp
   deriving (Show, Eq)
             
 data Lit = LInt Int
          | LBool Bool
+         | LStr String
   deriving (Show, Eq)
 
 -- List extension (Exercise 5.5 5.6)
@@ -51,6 +54,6 @@ data Lst = Cons Exp Exp
          | Lsts [Exp]
   deriving (Show, Eq)
 
-data Binop = Diff | Mult | Plus
+data Binop = Diff | Mult | Plus | Div
   deriving (Show, Eq)
 

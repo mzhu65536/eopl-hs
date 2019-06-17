@@ -1,5 +1,5 @@
 # EOPL
-* TODO Chapter 5 [13/21]
+* TODO Chapter 5 [15/26]
   :PROPERTIES:
   :COOKIE_DATA: recursive
   :END:
@@ -20,7 +20,7 @@
      14) [ ] profile ~fact-iter~ and ~fact~  (IO Monad)
      15) [ ] list continuation representation (~StateT~ / ~ReaderT~)
      16) [ ] statement extension (to be implemented in monadic interp)
-  2. Trampolined Interpreter (tail recursion) [3/5] 
+  2. Trampolined Interpreter (tail recursion) [3/6] 
      17) [@17] [X] wrap ~Bounce~ type around ~applyProcedureK~
      18) [X] ~data~ representation of ~Bounce~
      19) [X] wrap it around ~applyCont~ will have not type change
@@ -28,5 +28,14 @@
      21) [ ] implement in procedural language (replacing trampoline as loop) (to
          be implemented in code generation)
      22) [ ] to be verified later
-  3. Imperative Interpreter (State Monad)
-* 
+  3. Imperative Interpreter (State Monad, Skipped) [0/0]
+  4. Exception [2/4]
+     35) [@35] [ ] Direct Access to apply-handler (Omitted for a while)
+         - Add one more try layer
+         - Memorize try-cont 
+         - ~StateT~ Monad
+     36) [ ] use two continuation to deal with exceptions
+     37) [X] call with wrong number of arguments
+         - Partial Application was implemented
+     38) [X] division and ~divbyzero~
+

@@ -15,7 +15,7 @@ updateSto sto ref val = case updateSto' sto ref of
       updateSto' (x : xs) ref' =
         if ref' == 0
         then Just $ val : xs
-        else (updateSto' xs (ref' - 1)) >>= \sto'' -> Just $  x : sto''
+        else updateSto' xs (ref' - 1) >>= \sto'' -> Just $  x : sto''
 
 deRef :: Sto -> Ref -> Val
 deRef [] r = reportRefOutBound r
@@ -26,4 +26,5 @@ extendSto :: Sto -> Val -> (Sto, Ref)
 extendSto sto val = (sto ++ [val], length sto)
 
 reportRefOutBound :: Ref -> Val
-reportRefOutBound ref = VException $ "Unable to retrive ref #"++ (show ref)
+reportRefOutBound ref = VException $
+                        VStr $ "Unable to retrive ref #" ++ show ref

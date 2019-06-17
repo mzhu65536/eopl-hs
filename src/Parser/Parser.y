@@ -43,6 +43,7 @@ import Control.Monad.Except
     in      { TokenIn     }
 
     '\\'    { TokenLambda }
+    '\"'    { TokenDQuote }
     "->"    { TokenArrow  }
     '='     { TokenEq     }
     '-'     { TokenSub    }
@@ -62,7 +63,11 @@ import Control.Monad.Except
     "cdr"   { TokenCdr    }
     "null"  { TokenNil    }
     "null?" { TokenNilP   }
-    "list"  { TokenList   }     
+    "list"  { TokenList   }
+    "try"   { TokenTry    }
+    "catch" { TokenCatch  }
+    "raise" { TokenRaise  }
+    "div"   { TokenDiv    }
     NUM     { TokenNum $$ }
     VAR     { TokenSym $$ }
 -- Operators
@@ -78,16 +83,18 @@ import Control.Monad.Except
 --      | '{' Stms '}'                      { Block $2         }
 --      | "if" '(' Expr ')' Stmt Stmt       { IfS $3 $5 $6     }
 --      | "while" '(' Expr ')' Stmt         { While $3 $5      }
---      | "var" Vars ';' Stmt               { Declare $2 $4    }  
+--      | "var" Vars ';' Stmt               { Declare $2 $4    }
      
 
 Expr : let VExs in Expr                  { Let $2 $4         }
-     | rec VAR VAR '=' Expr in Expr      { Rec $2 $3 $5 $7   }
+     | rec VAR '(' Vars ')' '=' Expr in Expr      { Rec $2 $4 $7 $9   }
      | '\\' Vars "->" Expr               { Lam $2 $4         }
      | "if" Expr "then" Expr "else" Expr { If $2 $4 $6       }
      | "zero?" Expr                      { ZeroP $2          }
      | "set" VAR '=' Expr                { Set $2 $4         }
      | "begin" Exps "end"                { Begin $2          }
+     | "try" Expr "catch" '(' VAR ')' Expr { Try $2 $5 $7    }
+     | "raise" LFrm                       { Raise $2          }
      | LFrm                              { $1                }
 
 VExp : VAR '=' Expr                      { ($1, $3)          }
@@ -101,6 +108,7 @@ Exps : Expr ',' Exps                     { $1 : $3           }
 
 Vars : VAR Vars                          { $1 : $2           }
      | VAR                               { [$1]              }
+     
 LFrm : "car" LFrm                        { Lst $ Car $2      }
      | "cdr" LFrm                        { Lst $ Cdr $2      }
      | "null?" LFrm                      { Lst $ NilP $2     }
@@ -115,6 +123,7 @@ Exprs :: { [Exp]                                             }
 Form : Form '+' Form                     { Op Plus $1 $3     }
      | Form '-' Form                     { Op Diff $1 $3     }
      | Form '*' Form                     { Op Mult $1 $3     }
+     | Form "div" Form                   { Op Div $1 $3     }     
      | Fact                              { $1                }
 
 Fact : Fact Atom                         { App $1 $2         }
@@ -124,7 +133,8 @@ Fact : Fact Atom                         { App $1 $2         }
 
 Atom : '(' Expr ')'                      { $2                }
      | NUM                               { Lit (LInt $1)     }
-     | VAR                               { Var $1            }
+     | '\"' VAR '\"'                     { Lit (LStr $2)     }
+     | VAR                               { Var $1            }   
      | true                              { Lit (LBool True)  }
      | false                             { Lit (LBool False) }
      | "null"                            { Lst Nil           }

@@ -38,6 +38,7 @@ tokens :-
   True                          { \_ -> TokenTrue }
   False                         { \_ -> TokenFalse }
   in                            { \_ -> TokenIn }
+  div                           { \_ -> TokenDiv  }
 
   "->"                          { \_ -> TokenArrow }
   \=                            { \_ -> TokenEq }
@@ -48,11 +49,11 @@ tokens :-
   [\+]                          { \_ -> TokenAdd }  
   \(                            { \_ -> TokenLParen }
   \)                            { \_ -> TokenRParen }
-  "{" { \_ -> TokenLBrace }
-  "}" { \_ -> TokenRBrace }
+  "{"                           { \_ -> TokenLBrace }
+  "}"                           { \_ -> TokenRBrace }
   ","                           { \_ -> TokenCSep }
-  ";"  { \_ -> TokenSCep }
-  
+  ";"                           { \_ -> TokenSCep }
+  ["]                           { \_ -> TokenDQuote }     
   -- List Extension
   "cons"                        { \_ -> TokenCons }
   "car"                         { \_ -> TokenCar  }
@@ -64,8 +65,13 @@ tokens :-
   -- Statement Extension
   "print"                       { \_ -> TokenPrint }
   "while"                       { \_ -> TokenWhile }
-  "var"                         { \_ -> TokenVar   }    
-  
+  "var"                         { \_ -> TokenVar   }
+
+  -- Programmable Exceptions
+  "try"                         { \_ -> TokenTry   }
+  "raise"                       { \_ -> TokenRaise }
+  "catch"                       { \_ -> TokenCatch }  
+
   $alpha [$alpha $digit \_ \']* { \s -> TokenSym s }
   $digit+                       { \s -> TokenNum (read s) }     
   
@@ -75,6 +81,9 @@ data Token
   | TokenAdd
   | TokenSet
   | TokenDeclare
+  | TokenCatch
+  | TokenTry
+  | TokenRaise
   | TokenPrint
   | TokenWhile
   | TokenSCep
@@ -104,6 +113,8 @@ data Token
   | TokenLBrace
   | TokenRBrace  
   | TokenEOF
+  | TokenDiv
+  | TokenDQuote
   | TokenCons
   | TokenCar 
   | TokenCdr 

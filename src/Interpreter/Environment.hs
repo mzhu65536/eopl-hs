@@ -14,9 +14,9 @@ extendEnv ((s', r') : xs) s r
   | s' == s = (s, r) : xs
   | otherwise = (s', r') : extendEnv xs s r
 
-extendEnvR :: Env -> Sto -> Sym -> Sym -> Exp -> (Env, Sto)
-extendEnvR env sto nameP varB expP =
-  let vClosure = VClosure [varB] expP envR
+extendEnvR :: Env -> Sto -> Sym -> [Sym] -> Exp -> (Env, Sto)
+extendEnvR env sto nameP varBs expP =
+  let vClosure = VClosure varBs expP envR
       (sto', refClosure) = extendSto sto vClosure
       envR = extendEnv env nameP refClosure in
     (envR, sto')
@@ -26,7 +26,8 @@ extendEnvR env sto nameP varB expP =
 applyEnv :: Env -> Sto -> Sym -> RefVal
 applyEnv env sto s = foldr
                      (\(s', r') ys -> if s' == s then (sto, r') else ys)
-                     (extendSto sto $ VException $ "No such a binding: " ++ s )
+                     (extendSto sto $ VException $
+                      VStr $ "No such a binding: " ++ s )
                      env
 
 {-

@@ -96,4 +96,14 @@ spec = parallel $ do
       (parseExpr "begin let a = 1 in a * 2 end") $
       Right $
       Begin [Let [("a", Lit $ LInt 1)] (Op Mult (Var "a") (Lit $ LInt 2))]
-  
+  describe "parsing exception" $ do
+    it "raise error" $
+      shouldBe
+      (parseExpr "raise \"ParsingError\" " ) $
+      Right $ Raise (Lit $ LStr "ParsingError")
+    it "catch simple" $
+      shouldBe
+      (parseExpr "try 1 + 1 catch (err) 1 + 1") $
+      Right $
+      Try (Op Plus (Lit $ LInt 1) (Lit $ LInt 1)) "err"
+      (Op Plus (Lit $ LInt 1) (Lit $ LInt 1))
