@@ -1,6 +1,6 @@
 module Main where
 
-import Interpreter.Eval
+import Direct.Interpreter.Eval
 import Parser.Parser
 import System.Console.Haskeline
 

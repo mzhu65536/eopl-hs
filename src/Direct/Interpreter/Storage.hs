@@ -1,6 +1,6 @@
-module Interpreter.Storage where
+module Direct.Interpreter.Storage where
 
-import Interpreter.Data
+import Direct.Interpreter.Data
 
 emptySto :: Sto
 emptySto = []

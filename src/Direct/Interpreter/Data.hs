@@ -2,15 +2,15 @@
 Data representation 
 -}
 
-module Interpreter.Data ( Cont(..)
-                        , Env
-                        , Alp
-                        , Val(..)
-                        , Sto
-                        , Ref
-                        , RefVal
-                        , Bounce(..)
-                        ) where
+module Direct.Interpreter.Data ( Cont(..)
+                               , Env
+                               , Alp
+                               , Val(..)
+                               , Sto
+                               , Ref
+                               , RefVal
+                               , Bounce(..)
+                               ) where
 import Parser.Syntax
 import Data.Set
 import Control.Monad

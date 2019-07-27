@@ -1,4 +1,4 @@
-# EOPL
+# Essentials of Programming Language
 * TODO Chapter 5 [15/26]
   :PROPERTIES:
   :COOKIE_DATA: recursive
@@ -38,4 +38,67 @@
      37) [X] call with wrong number of arguments
          - Partial Application was implemented
      38) [X] division and ~divbyzero~
-
+         
+* TODO Chapter 7 (Types) [9/9]
+  :PROPERTIES:
+  :COOKIE_DATA: recursive
+  :END:
+  1. Value and Their Types [3/3]
+     1) [X] What types do value of following expressions have?
+        1. ~\x -> x - 3~ :
+           ~int -> int~
+        2. ~\f -> \x -> (f x) - 1~ :
+           ~('a -> int) -> 'a -> int~
+        3. ~\x -> x~ : 
+           ~'a -> 'a~
+        4. ~\x -> \y -> x y~ :
+           ~('a -> 'b) -> 'a -> 'b~
+        5. ~\x -> (x 3)~ :
+           ~(int -> 'a) -> 'a~
+        6. ~\x -> (x x)~ :
+           infinite type ~t -> t~
+        7. ~\x -> if x then 88 else 99~ :
+           ~bool -> int~
+        8. ~\x -> \y -> if x then y else 99~ :
+           ~bool -> int -> int~
+        9. ~(\p -> if p then 99 else 99) 33~ :
+           type error
+        10. ~(\p -> if p then 99 else 99) (\z -> z)~ :
+            type error
+        11. ~\f -> \g -> \p -> \x -> if (p (f x)) then (g 1) else (f x) - 1~ : 
+            ~('a -> int) -> (int -> int) -> (int -> bool) -> 'a~
+        12. ~\x -> \p -> \f if (p x) then x - 1 else (f p)~ : 
+            #+BEGIN_SRC haskell
+            Int -> (Bool -> Int) -> ((Bool -> Int) -> Int)
+            #+end_src
+        13. ~\f -> let d = (\x -> \z -> f (x x) z) in (\n -> f (d d) n)~ :
+            (Y Combinator)
+            #+BEGIN_SRC haskell
+            (() -> b -> a) -> b -> a
+            #+END_SRC 
+     2) [X] non-deterministic type? untyped? (Y combinator with 42??)
+     3) [X] infinite type ?
+  2. Assign a Type to an Expression [1/1]
+     4) [@4] [X] Derive type for
+        1) x : t1
+           - type-of [x = t1] x = t1 
+           - type-of [] \x -> x = t1 -> t1
+        2) x : t1 -> t2, y : t1
+           - type-of ... x = t1 -> t2 | type-of ... y = t1
+           - type-of [y = t1, x = t1->t2] x y = t2
+           - type-of [x = t1->t2] \y -> x y = t1 -> t2
+           - type-of [] \x -> \y -> x y = (t1 -> t2) -> t1 -> t2
+  3. Type Check Language [5/5]
+     5) [@5] [X] Extend the checker to handle
+        1) ~let~ : multiple declaration
+        2) ~letrec~ : multiple procedures with multiple arguments
+     6) [X] handle assignments (Set expression)
+     7) [X] Do not check IF-branch if predicate is not of ~bool~ 
+     8) [X] Add pair type ~t1 * t2~
+        1) type: ~TPair (Type, Type)~
+        2) construction: ~new-pair (e1, e2)~
+        3) destruction: ~unpair s1 s2 = e1 in e2~
+     9) [X] handle list type checking  
+     10) [X] handle explicit reference type checking
+     11) [ ] handle mutable pairs
+             

@@ -1,7 +1,7 @@
-module Interpreter.Environment where
+module Direct.Interpreter.Environment where
 
-import Interpreter.Data
-import Interpreter.Storage
+import Direct.Interpreter.Data
+import Direct.Interpreter.Storage
 import Parser.Syntax
 
 
