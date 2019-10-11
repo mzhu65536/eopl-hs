@@ -44,9 +44,31 @@ executables:
     - -rtsopts
     - -with-rtsopts=-N
     - -Wall
+    - -main-is Main
     dependencies:
     - eopl-hs
-
+  eopl-cps-exe:
+    main:                CPS.hs    
+    source-dirs:         app   
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    - -Wall
+    - -main-is CPS    
+    dependencies:
+    - eopl-hs
+  eopl-type-exe:
+    main:                Typed.hs    
+    source-dirs:         app   
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    - -Wall
+    - -main-is Typed    
+    dependencies:
+    - eopl-hs    
 tests:
   eopl-hs-test:
     main:                Spec.hs

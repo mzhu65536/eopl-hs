@@ -1,7 +1,7 @@
-module Interpreter.Value where
+module Direct.Interpreter.Value where
 
-import Interpreter.Data
-import Interpreter.Storage
+import Direct.Interpreter.Data
+import Direct.Interpreter.Storage
 import Parser.Syntax
 
 procedure :: [Sym] -> Exp -> Env -> Sto -> RefVal

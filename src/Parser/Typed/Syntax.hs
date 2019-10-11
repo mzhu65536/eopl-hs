@@ -5,16 +5,21 @@
 
 -}
 
-module Parser.Syntax
-  ( Sym
-  , Exp(..)
-  , Lit(..)
-  , Binop(..)
-  , Lst(..)
-  , Stm(..)
-  ) where
-
+module Parser.Typed.Syntax where
 type Sym = String
+
+
+data LType = LTInt
+           | LTBool
+           | LTString
+           | LTCurry LType LType
+           | LTPair LType LType
+           | LTList LType
+           | LTEmpty
+  deriving (Show, Eq)
+
+
+type TSym = (Sym, LType)
 
 data Stm = Assign Sym Exp
          | Print Exp
@@ -26,23 +31,22 @@ data Stm = Assign Sym Exp
 -- For the pedagogical purpose, we follow datatype from EOPL 
 data Exp = Lit Lit
          | Let [(Sym, Exp)] Exp
-         | Rec Sym [Sym] Exp Exp
+         | Rec [(TSym, [TSym], Exp)] Exp
          | Var Sym
+         | TVar TSym
          | Op Binop Exp Exp
          | ZeroP Exp
          | If Exp Exp Exp
-         | Lam [Sym] Exp
+         | Lam [TSym] Exp
          | App Exp Exp
          | Lst Lst
+         | LPr LPr
          | Set Sym Exp
          | Begin [Exp]
          | Try Exp Sym Exp
          | Raise Exp
-  deriving (Show, Eq)
-
-data LType = LTInt
-           | LTBool
-           | LTString
+         | ERef ERef
+         | MPar MPar
   deriving (Show, Eq)
 
 data Lit = LInt Int
@@ -52,15 +56,29 @@ data Lit = LInt Int
 
 -- List extension (Exercise 5.5 5.6)
 data Lst = Cons Exp Exp
-         | Nil
+         | Nil LType
          | Car Exp
          | Cdr Exp
          | NilP Exp
          | Lsts [Exp]
   deriving (Show, Eq)
 
-data Par = PCons Exp Exp
-         | PDstr Sym Sym Exp Exp 
+-- EXPLICIT REF Extension
+data ERef = ERNew Exp
+          | ERSet Sym Exp
+          | ERDer Exp
+  deriving (Show, Eq)
+
+data LPr = LPCons Exp Exp
+         | LPDStr Sym Sym Exp Exp
+  deriving (Show, Eq)
+
+data MPar = MPNew Exp Exp
+          | MPLeft Exp
+          | MPRight Exp
+          | MPSetL Exp Exp
+          | MPSetR Exp Exp
+  deriving (Show, Eq)
 
 data Binop = Diff | Mult | Plus | Div
   deriving (Show, Eq)

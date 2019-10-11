@@ -7,6 +7,7 @@ import Parser.Parser
 
 import qualified Parser.Spec
 import qualified Interpreter.Spec
+import qualified Typed.Spec
 -- import Data.Either
 
 import Test.Tasty
@@ -18,6 +19,7 @@ main = hspec $ do
   parallel $ do
     describe "Parser" Parser.Spec.spec
     describe "Interpreter" Interpreter.Spec.spec
+    describe "Typed" Typed.Spec.spec
 
 -- tests :: TestTree
 -- tests = testGroup "TestLiteral"

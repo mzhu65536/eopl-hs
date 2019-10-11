@@ -1,7 +1,7 @@
 module Interpreter.Spec where
 
-import Interpreter.Data
-import Interpreter.Eval
+import Direct.Interpreter.Data
+import Direct.Interpreter.Eval
 import Parser.Syntax
 import Parser.Parser
 

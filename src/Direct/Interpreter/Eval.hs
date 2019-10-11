@@ -1,9 +1,9 @@
-module Interpreter.Eval where
+module Direct.Interpreter.Eval where
 
-import Interpreter.Data
-import Interpreter.Value
-import Interpreter.Storage
-import Interpreter.Environment
+import Direct.Interpreter.Data
+import Direct.Interpreter.Value
+import Direct.Interpreter.Storage
+import Direct.Interpreter.Environment
 import Parser.Syntax
 
 -- TODO: More Haskellish  (Typeclass Eval, Monad ...)
@@ -62,7 +62,7 @@ evalK expr env sto cont = case expr of
   Begin (x : xs)           -> evalK x env sto (KBegin cont xs env)
   Raise expR               -> evalK expR env sto (KRaise cont)
   Try expT varE expH       -> evalK expT env sto $ KTry cont varE expH env
-  
+
 evalLit :: Sto -> Lit -> RefVal
 evalLit sto (LInt i)  = extendSto sto $ VInt i
 evalLit sto (LBool b) = extendSto sto $ VBool b
